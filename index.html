@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qo'shilmagan So'zlar – B1/B2/C1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1830;
+    --card: #211f35;
+    --accent: #e8c547;
+    --accent2: #ff6b6b;
+    --accent3: #6bcbff;
+    --correct: #4ade80;
+    --wrong: #f87171;
+    --text: #fffffe;
+    --muted: #a7a9be;
+    --border: rgba(232,197,71,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(232,197,71,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(107,203,255,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .screen { display:none; position:relative; z-index:1; }
+  .screen.active { display:block; }
+
+  #welcome {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+  }
+  #welcome.active { display:flex; }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(232,197,71,0.1);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 0.4rem 1.2rem;
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1.05rem;
+    font-weight: 300;
+    margin-bottom: 3rem;
+    max-width: 460px;
+    line-height: 1.6;
+  }
+
+  .level-selector {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .level-btn {
+    padding: 0.6rem 1.4rem;
+    border-radius: 50px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .level-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .level-btn.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f0e17;
+    font-weight: 600;
+  }
+
+  .count-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .count-label { color: var(--muted); font-size: 0.9rem; }
+  .count-input {
+    width: 80px;
+    padding: 0.5rem 0.8rem;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .count-input:focus { border-color: var(--accent); }
+
+  .direction-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .dir-btn {
+    padding: 0.55rem 1.2rem;
+    border-radius: 50px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dir-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+  .dir-btn.selected {
+    background: var(--accent3);
+    border-color: var(--accent3);
+    color: #0f0e17;
+    font-weight: 600;
+  }
+
+  .start-btn {
+    padding: 1rem 3rem;
+    background: linear-gradient(135deg, var(--accent), #f0a500);
+    border: none;
+    border-radius: 50px;
+    color: #0f0e17;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 30px rgba(232,197,71,0.25);
+    letter-spacing: 0.02em;
+  }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(232,197,71,0.35); }
+
+  .stats-row {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label { color: var(--muted); font-size: 0.8rem; }
+
+  /* ===== QUIZ ===== */
+  #quiz {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+  }
+  #quiz.active { display:flex; }
+
+  .quiz-header {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+
+  .progress-wrap {
+    flex: 1;
+    margin: 0 1rem;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--surface);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #f0a500);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+
+  .score-badge {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .home-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .home-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .question-card {
+    width: 100%;
+    max-width: 500px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  }
+
+  .level-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    margin-bottom: 1.2rem;
+  }
+  .level-tag.b1 { background: rgba(232,197,71,0.15); color: var(--accent); }
+  .level-tag.b2 { background: rgba(255,107,107,0.15); color: var(--accent2); }
+  .level-tag.c1 { background: rgba(180,107,255,0.15); color: #b46bff; }
+
+  .question-word {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .question-hint {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .answer-input {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .answer-input:focus { border-color: var(--accent); }
+  .answer-input.correct { border-color: var(--correct); background: rgba(74,222,128,0.08); }
+  .answer-input.wrong { border-color: var(--wrong); background: rgba(248,113,113,0.08); }
+
+  .answer-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1.2rem;
+  }
+
+  .option-btn {
+    padding: 0.85rem 1rem;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .option-btn.correct { background: rgba(74,222,128,0.15); border-color: var(--correct); color: var(--correct); }
+  .option-btn.wrong { background: rgba(248,113,113,0.12); border-color: var(--wrong); color: var(--wrong); }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-area {
+    min-height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .feedback-correct { color: var(--correct); }
+  .feedback-wrong { color: var(--wrong); }
+
+  .next-btn {
+    padding: 0.85rem 2.5rem;
+    background: linear-gradient(135deg, var(--accent), #f0a500);
+    border: none;
+    border-radius: 50px;
+    color: #0f0e17;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: none;
+  }
+  .next-btn.visible { display: inline-block; }
+  .next-btn:hover { transform: translateY(-1px); }
+
+  /* ===== RESULT ===== */
+  #result {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+  #result.active { display:flex; }
+
+  .result-emoji { font-size: 4rem; margin-bottom: 1rem; }
+  .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .result-score {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: 'Playfair Display', serif;
+    margin: 1rem 0;
+  }
+  .result-sub { color: var(--muted); margin-bottom: 2rem; }
+
+  .result-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .btn-secondary {
+    padding: 0.8rem 2rem;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 50px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .wrong-list-wrap { margin-top: 2rem; width: 100%; max-width: 480px; text-align: left; }
+  .wrong-list-title { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.8rem; text-align: center; }
+  .wrong-list { display: none; }
+  .wrong-item {
+    background: var(--card);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+  }
+  .wi-tr { font-weight: 600; }
+  .wi-uz { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- WELCOME -->
+<div id="welcome" class="screen active">
+  <div class="logo-badge">✦ Hilol Edu Lug'at</div>
+  <h1 class="main-title">Qo'shilmagan<br>So'zlar</h1>
+  <p class="subtitle">B1, B2 va C1 darajalar uchun asosiy faylda yo'q bo'lgan so'zlar. Savol-javob rejimida mashq qiling.</p>
+
+  <div class="level-selector">
+    <button class="level-btn selected" data-level="all">Hammasi</button>
+    <button class="level-btn" data-level="b1" style="border-color:rgba(232,197,71,0.3)">B1</button>
+    <button class="level-btn" data-level="b2" style="border-color:rgba(255,107,107,0.3)">B2</button>
+    <button class="level-btn" data-level="c1" style="border-color:rgba(180,107,255,0.3)">C1</button>
+  </div>
+
+  <div class="count-row">
+    <span class="count-label">Savollar soni:</span>
+    <input type="number" class="count-input" id="countInput" value="20" min="5" max="200">
+  </div>
+
+  <div class="direction-row">
+    <button class="dir-btn selected" data-dir="tr-uz">TR → UZ</button>
+    <button class="dir-btn" data-dir="uz-tr">UZ → TR</button>
+  </div>
+
+  <button class="start-btn" onclick="startQuiz()">Boshlash</button>
+
+  <div class="stats-row">
+    <div class="stat-item"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Jami so'z</div></div>
+    <div class="stat-item"><div class="stat-num" id="statB1">0</div><div class="stat-label">B1</div></div>
+    <div class="stat-item"><div class="stat-num" id="statB2">0</div><div class="stat-label">B2</div></div>
+    <div class="stat-item"><div class="stat-num" id="statC1">0</div><div class="stat-label">C1</div></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="screen">
+  <div class="quiz-header">
+    <button class="home-btn" onclick="goHome()">←</button>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">0 / 0</div>
+    </div>
+    <div class="score-badge" id="scoreBadge">0 ✓</div>
+  </div>
+
+  <div class="question-card">
+    <div class="level-tag" id="levelTag">B1</div>
+    <div class="question-word" id="questionWord">—</div>
+    <div class="question-hint" id="questionHint"></div>
+    <div class="answer-options" id="answerOptions"></div>
+  </div>
+
+  <div class="feedback-area" id="feedbackArea"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Keyingisi →</button>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+  <div class="result-emoji" id="resultEmoji">🎉</div>
+  <h2 class="result-title" id="resultTitle">Barakalla!</h2>
+  <div class="result-score" id="resultScore">0/0</div>
+  <p class="result-sub" id="resultSub"></p>
+  <div class="result-actions">
+    <button class="btn-secondary" onclick="showWrongList()">Xatolarni ko'rish</button>
+    <button class="start-btn" onclick="restartQuiz()">Qayta urinish</button>
+    <button class="btn-secondary" onclick="goHome()">Bosh sahifa</button>
+  </div>
+  <div class="wrong-list-wrap">
+    <div class="wrong-list-title">Noto'g'ri javoblar:</div>
+    <div class="wrong-list" id="wrongList"></div>
+  </div>
+</div>
+
+<script>
+const words = [
+  // ========== B1 daraja – QOSHILMAGAN ==========
+  {tr:"acımak",uz:"og'rimoq",level:"b1"},
+  {tr:"akademik",uz:"akademik",level:"b1"},
+  {tr:"akciğer",uz:"o'pka",level:"b1"},
+  {tr:"akmak",uz:"oqmoq",level:"b1"},
+  {tr:"aksamak",uz:"oqsamoq",level:"b1"},
+  {tr:"aksan",uz:"urg'u, aksent",level:"b1"},
+  {tr:"akupunktur",uz:"ignaterapiya",level:"b1"},
+  {tr:"akıcı",uz:"ravon",level:"b1"},
+  {tr:"akıtmak",uz:"oqizmoq",level:"b1"},
+  {tr:"alaylı",uz:"kinoyali",level:"b1"},
+  {tr:"alt yazı",uz:"subtitr",level:"b1"},
+  {tr:"alışveriş sitesi",uz:"savdo-sotiq sayti",level:"b1"},
+  {tr:"ambalaj",uz:"qadoq, upakova",level:"b1"},
+  {tr:"araştırma",uz:"tadqiqot",level:"b1"},
+  {tr:"araştırma yapmak",uz:"tadqiqot o'tkazmoq",level:"b1"},
+  {tr:"arzu",uz:"istak, orzu",level:"b1"},
+  {tr:"asgari",uz:"eng past, eng oz",level:"b1"},
+  {tr:"asma kilit",uz:"qulf",level:"b1"},
+  {tr:"atıştırmak",uz:"yengil tamaddi qilmoq",level:"b1"},
+  {tr:"avantaj",uz:"ijobiy, afzallik",level:"b1"},
+  {tr:"ayakkabı topuğu",uz:"poyabzal tovoni",level:"b1"},
+  {tr:"ayaküstü yemek",uz:"tez tayyor bo'ladigan taom",level:"b1"},
+  {tr:"ayırmak",uz:"ajratmoq",level:"b1"},
+  {tr:"azim",uz:"qaror, kuch-g'ayrat",level:"b1"},
+  {tr:"açlık",uz:"ochlik",level:"b1"},
+  {tr:"aşmak",uz:"oshib o'tmoq",level:"b1"},
+  {tr:"bağlantı",uz:"ulanish, aloqa",level:"b1"},
+  {tr:"bağırsak",uz:"ichak",level:"b1"},
+  {tr:"başlanğıç",uz:"boshlang'ich",level:"b1"},
+  {tr:"başlık",uz:"sarlavha",level:"b1"},
+  {tr:"beklenti",uz:"kutish, umid",level:"b1"},
+  {tr:"belediye",uz:"hokimiyat, kengash",level:"b1"},
+  {tr:"belerti",uz:"alomat, simptom",level:"b1"},
+  {tr:"benzemek",uz:"o'xshamoq",level:"b1"},
+  {tr:"benzerlik",uz:"o'xshashlik",level:"b1"},
+  {tr:"berber",uz:"sartarosh",level:"b1"},
+  {tr:"besin",uz:"oziq-ovqat",level:"b1"},
+  {tr:"beslenmek",uz:"oziqlanmoq, ovqatlanmoq",level:"b1"},
+  {tr:"bilgi",uz:"ma'lumot, bilim",level:"b1"},
+  {tr:"bilinç",uz:"ong",level:"b1"},
+  {tr:"bilinçli",uz:"ongli",level:"b1"},
+  {tr:"birey",uz:"individual, shaxs",level:"b1"},
+  {tr:"biriktirmek",uz:"yig'moq, to'plamoq",level:"b1"},
+  {tr:"biçim",uz:"format, shakl",level:"b1"},
+  {tr:"bocalamak",uz:"beqaror bo'lmoq, gandiraklamoq",level:"b1"},
+  {tr:"boru",uz:"quvur",level:"b1"},
+  {tr:"boyut",uz:"o'lcham, hajm",level:"b1"},
+  {tr:"bozmak",uz:"buzmoq",level:"b1"},
+  {tr:"bozulmak",uz:"buzulmoq, aynimoq",level:"b1"},
+  {tr:"boşaltmak",uz:"bo'shatmoq",level:"b1"},
+  {tr:"buket",uz:"guldasta",level:"b1"},
+  {tr:"bulantı",uz:"ko'ngil aynishi",level:"b1"},
+  {tr:"burkmak",uz:"qayrilmoq, bukilmoq",level:"b1"},
+  {tr:"burun akıntısı",uz:"burun oqishi",level:"b1"},
+  {tr:"böbrek",uz:"buyrak",level:"b1"},
+  {tr:"camcılık",uz:"deraza-romchilik",level:"b1"},
+  {tr:"can",uz:"jon, ruh",level:"b1"},
+  {tr:"canlılık",uz:"hayotiylik, jonlilik",level:"b1"},
+  {tr:"civar",uz:"atrof-muhit, yaqin joylar",level:"b1"},
+  {tr:"dalak",uz:"taloq",level:"b1"},
+  {tr:"dama",uz:"shashka o'yini",level:"b1"},
+  {tr:"data",uz:"ma'lumotlar",level:"b1"},
+  {tr:"davranış",uz:"o'zini tutish, xulq",level:"b1"},
+  {tr:"dağınıklık",uz:"tartibsizlik",level:"b1"},
+  {tr:"deneyim",uz:"tajriba",level:"b1"},
+  {tr:"destekçi",uz:"tarafdor, qo'llovchi",level:"b1"},
+  {tr:"detay",uz:"tafsilot",level:"b1"},
+  {tr:"detoks",uz:"organizmni tozalash terapiyasi",level:"b1"},
+  {tr:"dezavantaj",uz:"salbiy, kamchilik",level:"b1"},
+  {tr:"dezenfektan",uz:"dezinfeksiyalovchi vosita",level:"b1"},
+  {tr:"değerlendirmek",uz:"baholamoq, qadrlamoq",level:"b1"},
+  {tr:"değişiklik",uz:"o'zgarish",level:"b1"},
+  {tr:"dikiş",uz:"tikish",level:"b1"},
+  {tr:"dilek tutmak",uz:"tilak tilamoq",level:"b1"},
+  {tr:"dilik ağaçı",uz:"tilak daraxti",level:"b1"},
+  {tr:"dinmek",uz:"tinmoq, to'xtamoq",level:"b1"},
+  {tr:"diz",uz:"tizza",level:"b1"},
+  {tr:"doldurmak",uz:"to'ldirmoq",level:"b1"},
+  {tr:"dolgun",uz:"do'mboq, to'liq",level:"b1"},
+  {tr:"dolunay",uz:"to'lin oy",level:"b1"},
+  {tr:"durum",uz:"holat, ahvol",level:"b1"},
+  {tr:"duruş",uz:"turish, holat",level:"b1"},
+  {tr:"döküntü",uz:"toshmalar, qoldiq",level:"b1"},
+  {tr:"dönmek",uz:"qaytmoq, aylanmoq",level:"b1"},
+  {tr:"döşeme",uz:"pol, taxtali to'shama",level:"b1"},
+  {tr:"dürtü",uz:"impuls, undov",level:"b1"},
+  {tr:"düşük",uz:"past, oz, kam",level:"b1"},
+  {tr:"ebeveyn",uz:"ota-ona",level:"b1"},
+  {tr:"eklem",uz:"bo'g'im, qo'shma",level:"b1"},
+  {tr:"emlakçılık",uz:"ko'chmas mulk dallolligi",level:"b1"},
+  {tr:"engelli",uz:"imkoniyati cheklangan, nogiron",level:"b1"},
+  {tr:"etki",uz:"ta'sir",level:"b1"},
+  {tr:"etkinlik",uz:"faoliyat, mashg'ulot",level:"b1"},
+  {tr:"eyalet",uz:"shtat, viloyat",level:"b1"},
+  {tr:"eğitmen",uz:"o'rgatuvchi, instruktor",level:"b1"},
+  {tr:"eşarp",uz:"sharf",level:"b1"},
+  {tr:"felç",uz:"falaj, insult",level:"b1"},
+  {tr:"festival",uz:"festival",level:"b1"},
+  {tr:"firma",uz:"firma, kompaniya",level:"b1"},
+  {tr:"fizyolojik",uz:"fiziologik, jismoniy",level:"b1"},
+  {tr:"fışkırmak",uz:"otilib chiqmoq, toshmoq",level:"b1"},
+  {tr:"gemecilik",uz:"kemasozlik",level:"b1"},
+  {tr:"gerektirmek",uz:"talab qilmoq",level:"b1"},
+  {tr:"gerginlik",uz:"zo'riqish, taranglik",level:"b1"},
+  {tr:"geçici",uz:"o'tkinchi, vaqtinchalik",level:"b1"},
+  {tr:"girişim",uz:"tashabbus, urinish",level:"b1"},
+  {tr:"grafik tasarım",uz:"grafik dizayn",level:"b1"},
+  {tr:"görsel malzeme",uz:"vizual material",level:"b1"},
+  {tr:"görünüş",uz:"tashqi ko'rinish",level:"b1"},
+  {tr:"göz temasi",uz:"ko'z bilan muloqot",level:"b1"},
+  {tr:"göçebe",uz:"ko'chmanchi",level:"b1"},
+  {tr:"gütmek",uz:"ko'zlamoq, boqmoq",level:"b1"},
+  {tr:"güç",uz:"kuch, qiyinchilik",level:"b1"},
+  {tr:"gıda",uz:"ozuqa, oziq-ovqat",level:"b1"},
+  {tr:"hakem",uz:"hakam, referi",level:"b1"},
+  {tr:"halat",uz:"qalin arqon",level:"b1"},
+  {tr:"havale",uz:"havola, sudurgi kasalligi",level:"b1"},
+  {tr:"hayır",uz:"yaxshilik, xayriya",level:"b1"},
+  {tr:"hazırlık",uz:"tayyorgarlik",level:"b1"},
+  {tr:"iade etmek",uz:"qaytarib bermoq",level:"b1"},
+  {tr:"ikramiye",uz:"mukofot, premiya",level:"b1"},
+  {tr:"ilerletmek",uz:"ilgarilamoq, oldinga harakat qilmoq",level:"b1"},
+  {tr:"ilişki",uz:"munosabat, aloqa",level:"b1"},
+  {tr:"ilişkin",uz:"bog'liq, oid",level:"b1"},
+  {tr:"imdat",uz:"yordam chaqiruvi",level:"b1"},
+  {tr:"imza atmak",uz:"imzolamoq",level:"b1"},
+  {tr:"incelemek",uz:"ko'zdan kechirmoq, tekshirmoq",level:"b1"},
+  {tr:"ipucu",uz:"kalavaning uchi, maslahat",level:"b1"},
+  {tr:"iç organ",uz:"ichki organ",level:"b1"},
+  {tr:"içerik",uz:"tarkib, mohiyat",level:"b1"},
+  {tr:"içsel",uz:"ichki",level:"b1"},
+  {tr:"iğne",uz:"igna, ukol",level:"b1"},
+  {tr:"iş bölümü",uz:"mehnat taqsimoti",level:"b1"},
+  {tr:"işlem",uz:"jarayon, operatsiya",level:"b1"},
+  {tr:"işlev",uz:"vazifa, funksiya",level:"b1"},
+  {tr:"iştah",uz:"ishtaha",level:"b1"},
+  {tr:"jandarma",uz:"askar, jandarm",level:"b1"},
+  {tr:"jest",uz:"jest, imo-ishora",level:"b1"},
+  {tr:"jüri",uz:"hakam hay'ati",level:"b1"},
+  {tr:"kan akışı",uz:"qon oqishi",level:"b1"},
+  {tr:"kan dolaşımı",uz:"qon aylanishi",level:"b1"},
+  {tr:"karanfıl",uz:"qalampir guli, chinnigul",level:"b1"},
+  {tr:"karbonhidrat",uz:"uglevodlar",level:"b1"},
+  {tr:"kargo",uz:"tashima yuk, kargo",level:"b1"},
+  {tr:"karnaval",uz:"karnaval",level:"b1"},
+  {tr:"kas sistemi",uz:"mushak tizimi",level:"b1"},
+  {tr:"katkı sağlamak",uz:"hissa qo'shmoq",level:"b1"},
+  {tr:"kaygı",uz:"tashvish, xavotir",level:"b1"},
+  {tr:"kaynak",uz:"asos, manbaa",level:"b1"},
+  {tr:"kaçınmak",uz:"qochmoq, o'zini tiymoq",level:"b1"},
+  {tr:"keçi",uz:"echki",level:"b1"},
+  {tr:"keşke",uz:"koshki edi",level:"b1"},
+  {tr:"kinestetik",uz:"kinestetik, harakatlarni sezish qobiliyati",level:"b1"},
+  {tr:"kolonya",uz:"odekolon",level:"b1"},
+  {tr:"koltuk değneği",uz:"qo'ltiq tayog'i",level:"b1"},
+  {tr:"kombi",uz:"bug' qozoni, isitish tizimi",level:"b1"},
+  {tr:"konsept",uz:"tushuncha, kontseptsiya",level:"b1"},
+  {tr:"konteyner",uz:"konteyner",level:"b1"},
+  {tr:"koordinasyon",uz:"muvofiqlashtirish",level:"b1"},
+  {tr:"kopmak",uz:"uzilmoq, uzmoq",level:"b1"},
+  {tr:"korkunç",uz:"qo'rqinchli, dahshatli",level:"b1"},
+  {tr:"korkutucu",uz:"qo'rqituvchi",level:"b1"},
+  {tr:"kriter",uz:"me'zon, o'lchov",level:"b1"},
+  {tr:"krizantem",uz:"xrizantema",level:"b1"},
+  {tr:"kumaş",uz:"mato, gazlama",level:"b1"},
+  {tr:"kurtarmak",uz:"qutqarmoq",level:"b1"},
+  {tr:"kurtulmak",uz:"qutulmoq",level:"b1"},
+  {tr:"kusmak",uz:"qusmoq",level:"b1"},
+  {tr:"kırık",uz:"singan, buzilgan",level:"b1"},
+  {tr:"kızamık",uz:"qizamiq",level:"b1"},
+  {tr:"kızarmak",uz:"qizarmoq",level:"b1"},
+  {tr:"madde",uz:"modda, moddiy",level:"b1"},
+  {tr:"makale",uz:"maqola",level:"b1"},
+  {tr:"marangoz",uz:"duradgor",level:"b1"},
+  {tr:"maske",uz:"niqob, maska",level:"b1"},
+  {tr:"masrafsız",uz:"xarajatsiz",level:"b1"},
+  {tr:"masumiyet",uz:"aybsizlik, begunohlik",level:"b1"},
+  {tr:"mekanizma",uz:"mexanizm",level:"b1"},
+  {tr:"mektepli",uz:"kasb-hunar egasi",level:"b1"},
+  {tr:"melodi",uz:"ohang, kuy",level:"b1"},
+  {tr:"memleket",uz:"viloyat, tug'ilgan joy",level:"b1"},
+  {tr:"menenjit",uz:"meningit",level:"b1"},
+  {tr:"mesai",uz:"ish vaqti, mehnat",level:"b1"},
+  {tr:"metobolizma",uz:"moddalar almashinuvi",level:"b1"},
+  {tr:"mevki",uz:"mavqe, lavozim",level:"b1"},
+  {tr:"migren",uz:"migren, bosh og'rig'i",level:"b1"},
+  {tr:"mikroskop",uz:"mikroskop",level:"b1"},
+  {tr:"mimik",uz:"mimika, yuz ifodalari",level:"b1"},
+  {tr:"motive etmek",uz:"motivatsiya bermoq",level:"b1"},
+  {tr:"muhasebecilik",uz:"buxgalteriya",level:"b1"},
+  {tr:"muhit",uz:"muhit, atrof",level:"b1"},
+  {tr:"müstakil",uz:"mustaqil, hovli uy",level:"b1"},
+  {tr:"nesnel",uz:"obyektiv",level:"b1"},
+  {tr:"nezih",uz:"toza, sof, nozik",level:"b1"},
+  {tr:"objektif",uz:"obyektiv, maqsad",level:"b1"},
+  {tr:"obsesif",uz:"obsesif, ruhiy buzilish",level:"b1"},
+  {tr:"onur",uz:"hurmat, sha'n",level:"b1"},
+  {tr:"ot",uz:"o't, o'simlik",level:"b1"},
+  {tr:"otistik",uz:"autizm",level:"b1"},
+  {tr:"oğlak",uz:"uloqcha, echki bolasi",level:"b1"},
+  {tr:"parazit",uz:"parazit",level:"b1"},
+  {tr:"parlak",uz:"porloq, yorqin",level:"b1"},
+  {tr:"pastörize",uz:"pasterizatsiya",level:"b1"},
+  {tr:"pazarlık",uz:"savdo, kelishuv",level:"b1"},
+  {tr:"pışmanlık",uz:"pushaymonlik, afsus",level:"b1"},
+  {tr:"portakal çiçeği",uz:"apelsin guli",level:"b1"},
+  {tr:"püf noktası",uz:"nozik nuqtasi, sir",level:"b1"},
+  {tr:"rahatsızlık",uz:"noqulaylik, kasallik",level:"b1"},
+  {tr:"rastgele",uz:"tasodifiy, ixtiyoriy",level:"b1"},
+  {tr:"rastlantı",uz:"tasodif, uchrashuv",level:"b1"},
+  {tr:"reklam",uz:"reklama",level:"b1"},
+  {tr:"reklamcılık",uz:"reklamachilik",level:"b1"},
+  {tr:"rengarenk",uz:"rang-barang, xilma-xil",level:"b1"},
+  {tr:"ritim",uz:"ritm",level:"b1"},
+  {tr:"ritmik",uz:"ritmik, ritmga xos",level:"b1"},
+  {tr:"ruhsal",uz:"ruhiy",level:"b1"},
+  {tr:"sahip",uz:"sohib, ega",level:"b1"},
+  {tr:"sakatlık",uz:"nogiron, oqsoqlik",level:"b1"},
+  {tr:"saplantı",uz:"obsesiya, ta'qib",level:"b1"},
+  {tr:"satış",uz:"sotuv, savdo",level:"b1"},
+  {tr:"saygın",uz:"hurmatli, nufuzli",level:"b1"},
+  {tr:"sağlık sigortası",uz:"sog'liq sug'urtasi",level:"b1"},
+  {tr:"sektör",uz:"sektor, soha",level:"b1"},
+  {tr:"semptom",uz:"alomat, semptom",level:"b1"},
+  {tr:"simetrik",uz:"simmetrik",level:"b1"},
+  {tr:"sivilce",uz:"husnbuzar, chipqon",level:"b1"},
+  {tr:"slayt",uz:"slayd",level:"b1"},
+  {tr:"solunum",uz:"nafas olish",level:"b1"},
+  {tr:"sona ermek",uz:"oxiriga yetmoq, tugamoq",level:"b1"},
+  {tr:"sosyal sınıf",uz:"ijtimoiy sinf",level:"b1"},
+  {tr:"soyut",uz:"mavhum, abstrakt",level:"b1"},
+  {tr:"spor dalı",uz:"sport turi, sport sohasi",level:"b1"},
+  {tr:"su kanalı",uz:"suv kanali",level:"b1"},
+  {tr:"suçlu",uz:"aybdor, jinoyatchi",level:"b1"},
+  {tr:"söndürmek",uz:"o'chirmoq, so'ndirmoq",level:"b1"},
+  {tr:"süreç",uz:"jarayon, davr",level:"b1"},
+  {tr:"sürükleyici",uz:"qiziqarli, o'ziga tortuvchi",level:"b1"},
+  {tr:"sıkışmak",uz:"siqilib qolmoq, tiqilib qolmoq",level:"b1"},
+  {tr:"sır",uz:"sir, maxfiy narsa",level:"b1"},
+  {tr:"sızdırmak",uz:"sizdirmoq, chiqarmoq",level:"b1"},
+  {tr:"sızıntı",uz:"sizib chiqish",level:"b1"},
+  {tr:"sığmak",uz:"sig'moq",level:"b1"},
+  {tr:"tablet",uz:"planshet",level:"b1"},
+  {tr:"takıntılı",uz:"obsesif, biron narsaga fikri band",level:"b1"},
+  {tr:"talep etmek",uz:"talab qilmoq",level:"b1"},
+  {tr:"tanım",uz:"ta'rif, aniqlash",level:"b1"},
+  {tr:"tanımlamak",uz:"ta'rif bermoq, aniqlash",level:"b1"},
+  {tr:"tarife",uz:"narxlar jadvali",level:"b1"},
+  {tr:"tarz",uz:"usul, uslub, tarz",level:"b1"},
+  {tr:"tasarruflu",uz:"tejamkor",level:"b1"},
+  {tr:"tekne",uz:"qayiq, kema",level:"b1"},
+  {tr:"telaşlanmak",uz:"xavotir olmoq, shoshilmoq",level:"b1"},
+  {tr:"temas kurmak",uz:"aloqa o'rnatmoq",level:"b1"},
+  {tr:"temsilci",uz:"vakil, namoyandastrategic",level:"b1"},
+  {tr:"tesisatçı",uz:"chilangar, santexnik",level:"b1"},
+  {tr:"toksin",uz:"zahar, toksin",level:"b1"},
+  {tr:"toplayıcı",uz:"yig'uvchi, tanlovchi",level:"b1"},
+  {tr:"tören",uz:"marosim, tadbir",level:"b1"},
+  {tr:"tıkanmak",uz:"tiqilib qolmoq",level:"b1"},
+  {tr:"ustalık",uz:"mahorat, ustaxona",level:"b1"},
+  {tr:"usul",uz:"usul, tartib",level:"b1"},
+  {tr:"uygun",uz:"mos, qulay",level:"b1"},
+  {tr:"uyum",uz:"moslik, uyg'unlik",level:"b1"},
+  {tr:"uyumlu",uz:"moslashuvchan",level:"b1"},
+  {tr:"vana",uz:"valf, klapan",level:"b1"},
+  {tr:"veba",uz:"vabo, o'lat",level:"b1"},
+  {tr:"yansıtmak",uz:"aks ettirmoq",level:"b1"},
+  {tr:"yapay zeka",uz:"sun'iy intellekt",level:"b1"},
+  {tr:"yapboz",uz:"pazl o'yini",level:"b1"},
+  {tr:"yapma",uz:"soxta, sun'iy",level:"b1"},
+  {tr:"yara",uz:"yara, jarohat",level:"b1"},
+  {tr:"yaradılış",uz:"tabiati, tabiat",level:"b1"},
+  {tr:"yardımcı olmak",uz:"yordamchi bo'lmoq",level:"b1"},
+  {tr:"yatılı",uz:"yotoqli, internat",level:"b1"},
+  {tr:"yayla",uz:"yaylov, tog' o'tloqi",level:"b1"},
+  {tr:"yayılmak",uz:"yoyilmoq, tarqalmoq",level:"b1"},
+  {tr:"yayın",uz:"nashr, chop etish",level:"b1"},
+  {tr:"yazlık",uz:"dala hovli, dacha",level:"b1"},
+  {tr:"yazılımcı",uz:"dasturchi",level:"b1"},
+  {tr:"yaşam",uz:"hayot, yashash",level:"b1"},
+  {tr:"yaşayış",uz:"yashash tarzi",level:"b1"},
+  {tr:"yaşıt",uz:"tengdosh",level:"b1"},
+  {tr:"yenilemek",uz:"yangilamoq",level:"b1"},
+  {tr:"yenilikçi",uz:"novator, yangilikchi",level:"b1"},
+  {tr:"yetinmek",uz:"qanoat qilmoq",level:"b1"},
+  {tr:"yoga",uz:"yoga",level:"b1"},
+  {tr:"yoksul",uz:"nochor, kambag'al",level:"b1"},
+  {tr:"yoksulluk",uz:"nochorlik, kambag'allik",level:"b1"},
+  {tr:"yorum",uz:"izoh, sharh",level:"b1"},
+  {tr:"yönetici",uz:"boshqaruvchi, rahbar",level:"b1"},
+  {tr:"yöntem",uz:"usul, uslub",level:"b1"},
+  {tr:"yörük",uz:"ko'chmanchi",level:"b1"},
+  {tr:"yüksek lisans",uz:"magistratura",level:"b1"},
+  {tr:"yün",uz:"jun, yung",level:"b1"},
+  {tr:"yığmak",uz:"yig'moq, to'plamoq",level:"b1"},
+  {tr:"zafer işareti",uz:"g'alaba belgisi",level:"b1"},
+  {tr:"zahmetli",uz:"zahmatli, qiyin",level:"b1"},
+  {tr:"zenginleşmek",uz:"boyimoq",level:"b1"},
+  {tr:"zihin",uz:"zehn, aql",level:"b1"},
+  {tr:"çalışan",uz:"ishchi, xodim",level:"b1"},
+  {tr:"çaput",uz:"uvada, eski mato",level:"b1"},
+  {tr:"çare",uz:"chora, davo",level:"b1"},
+  {tr:"çağırmak",uz:"chaqirmoq",level:"b1"},
+  {tr:"çevrimenlik",uz:"tarjimonlik",level:"b1"},
+  {tr:"çeşme",uz:"buloq, chashma",level:"b1"},
+  {tr:"çiftçilik",uz:"dehqonchilik",level:"b1"},
+  {tr:"çizgi",uz:"chiziq",level:"b1"},
+  {tr:"çoğalmak",uz:"ko'paymoq",level:"b1"},
+  {tr:"çöp",uz:"chiqindi, axlat",level:"b1"},
+  {tr:"çürük",uz:"chirigan, eskirgan",level:"b1"},
+  {tr:"çıraklık",uz:"shogirdlik",level:"b1"},
+  {tr:"ödeme",uz:"to'lov",level:"b1"},
+  {tr:"ödünç vermek",uz:"qarzga bermoq",level:"b1"},
+  {tr:"öfkelendirmek",uz:"g'azablantirmoq",level:"b1"},
+  {tr:"öge",uz:"unsur, element",level:"b1"},
+  {tr:"ölçmek",uz:"o'lchamoq",level:"b1"},
+  {tr:"ölçüt",uz:"me'zon, o'lchov",level:"b1"},
+  {tr:"ömür",uz:"umr, hayot",level:"b1"},
+  {tr:"özgü",uz:"o'ziga xos, maxsus",level:"b1"},
+  {tr:"özgür",uz:"ozod, erkin",level:"b1"},
+  {tr:"öğün",uz:"mahal, ovqat vaqti",level:"b1"},
+  {tr:"ücra",uz:"chekka, uzoq",level:"b1"},
+  {tr:"üniforma",uz:"yuniforma, forma kiyim",level:"b1"},
+  {tr:"üretken",uz:"samarali, unumli",level:"b1"},
+  {tr:"ürün",uz:"mahsulot",level:"b1"},
+  {tr:"ısınmak",uz:"isinmoq, isib ketmoq",level:"b1"},
+  {tr:"ısıtma",uz:"isitish",level:"b1"},
+  {tr:"şans vermek",uz:"imkon bermoq",level:"b1"},
+  {tr:"şart",uz:"shart",level:"b1"},
+  {tr:"şekerleme",uz:"qandolat mahsuloti",level:"b1"},
+  {tr:"şekil",uz:"shakl, ko'rinish",level:"b1"},
+  {tr:"şer",uz:"yomon, yomonlik",level:"b1"},
+  {tr:"şikâyet etmek",uz:"shikoyat qilmoq",level:"b1"},
+  {tr:"şişmek",uz:"shishmoq, kattalashmoq",level:"b1"},
+  {tr:"şofben",uz:"suv isitgichi",level:"b1"},
+  {tr:"şuur",uz:"ong, shuur",level:"b1"},
+  {tr:"şüpheli",uz:"shubhali, gumonlanuvchi",level:"b1"},
+
+  // ========== B2 daraja – QOSHILMAGAN ==========
+  {tr:"abaküs",uz:"hisob cho'ti, abak",level:"b2"},
+  {tr:"akort",uz:"sozlash, akord",level:"b2"},
+  {tr:"akustik",uz:"akustika",level:"b2"},
+  {tr:"ana ekran",uz:"asosiy ekran, monitor",level:"b2"},
+  {tr:"anonim",uz:"anonim, nomsiz",level:"b2"},
+  {tr:"anıt mezar",uz:"maqbara, yodgorlik qabr",level:"b2"},
+  {tr:"aristokrat",uz:"aristokrat, zodagon",level:"b2"},
+  {tr:"aseton",uz:"atseton",level:"b2"},
+  {tr:"asit",uz:"kislota",level:"b2"},
+  {tr:"astronot",uz:"astronavt",level:"b2"},
+  {tr:"asıl",uz:"asl, haqiqiy",level:"b2"},
+  {tr:"ata",uz:"ajdod, ota-bobo",level:"b2"},
+  {tr:"atasözü",uz:"maqol",level:"b2"},
+  {tr:"ayak uydurmak",uz:"moslashmoq, qo'shilmoq",level:"b2"},
+  {tr:"baklagil",uz:"dukkakli o'simlik",level:"b2"},
+  {tr:"banknot",uz:"banknot, pul",level:"b2"},
+  {tr:"barkod",uz:"shtrix kod",level:"b2"},
+  {tr:"barındırmak",uz:"boshpana bermoq, joylashtirmoq",level:"b2"},
+  {tr:"basmak",uz:"bosmoq, chop etmoq",level:"b2"},
+  {tr:"batarya",uz:"batareya",level:"b2"},
+  {tr:"bağlanmak",uz:"bog'lanmoq",level:"b2"},
+  {tr:"bel",uz:"bel, o'rta",level:"b2"},
+  {tr:"besteci",uz:"bastakor",level:"b2"},
+  {tr:"beyin göçü",uz:"miya drenaji, olimlar ketishi",level:"b2"},
+  {tr:"beyin gücü",uz:"miya kuchi, aqliy salohiyat",level:"b2"},
+  {tr:"bitkin",uz:"holsiz, darmonsiz",level:"b2"},
+  {tr:"boncuk",uz:"munchoq",level:"b2"},
+  {tr:"buhar",uz:"bug'",level:"b2"},
+  {tr:"buluş",uz:"ixtiro, kashfiyot",level:"b2"},
+  {tr:"buruşuk",uz:"burishgan, g'ijim",level:"b2"},
+  {tr:"bürokrasi",uz:"rasmiyatchilik, byurokratiya",level:"b2"},
+  {tr:"canına tak etmek",uz:"joniga tegmoq",level:"b2"},
+  {tr:"cenaze",uz:"janoza, dafn",level:"b2"},
+  {tr:"dantel",uz:"to'rli kashta, gipyur",level:"b2"},
+  {tr:"debriyaj",uz:"mufta, debriyaj",level:"b2"},
+  {tr:"delil",uz:"dalil, isbot",level:"b2"},
+  {tr:"denge",uz:"muvozanat",level:"b2"},
+  {tr:"dergâh",uz:"darveshxona",level:"b2"},
+  {tr:"derinlik",uz:"chuqurlik",level:"b2"},
+  {tr:"desen",uz:"naqsh, rasm",level:"b2"},
+  {tr:"destan",uz:"doston, epos",level:"b2"},
+  {tr:"dev",uz:"dev, gigant",level:"b2"},
+  {tr:"devrim",uz:"inqilob, to'ntarish",level:"b2"},
+  {tr:"dikiz aynası",uz:"orqa ko'rish oynasi",level:"b2"},
+  {tr:"direksiyon",uz:"avtomobil rul",level:"b2"},
+  {tr:"dirençli",uz:"chidamli, bardoshli",level:"b2"},
+  {tr:"dokunmatik",uz:"sensorli, teginib boshqariladigan",level:"b2"},
+  {tr:"dolandırıcılık",uz:"firibgarlik, aldamchilik",level:"b2"},
+  {tr:"donanım",uz:"uskuna, qurilma",level:"b2"},
+  {tr:"düğme",uz:"tugma, tugmacha",level:"b2"},
+  {tr:"ekran",uz:"ekran, monitor",level:"b2"},
+  {tr:"elde etmek",uz:"qo'lga kiritmoq, erishmoq",level:"b2"},
+  {tr:"emmek",uz:"so'rmoq, emmoq",level:"b2"},
+  {tr:"emsalsiz",uz:"tengsiz, misli yo'q",level:"b2"},
+  {tr:"engellemek",uz:"to'sqinlik qilmoq, oldini olmoq",level:"b2"},
+  {tr:"erişim",uz:"kirish, foydalanish",level:"b2"},
+  {tr:"etik",uz:"axloq, etika",level:"b2"},
+  {tr:"etkilemek",uz:"ta'sir qilmoq",level:"b2"},
+  {tr:"etkilenmek",uz:"ta'sirlanmoq",level:"b2"},
+  {tr:"evrensel",uz:"umumjahon, universal",level:"b2"},
+  {tr:"fener",uz:"fonar, shishali chiroq",level:"b2"},
+  {tr:"fokurdamak",uz:"qo'pchib qaynamoq",level:"b2"},
+  {tr:"fren",uz:"tormoz",level:"b2"},
+  {tr:"gaz",uz:"gaz, benzin",level:"b2"},
+  {tr:"gen",uz:"gen",level:"b2"},
+  {tr:"genetik",uz:"genetika",level:"b2"},
+  {tr:"geri dönüştürmek",uz:"qayta ishlab chiqarmoq",level:"b2"},
+  {tr:"gezegen",uz:"sayyora",level:"b2"},
+  {tr:"gezgin",uz:"sayyoh, sayohatchi",level:"b2"},
+  {tr:"geçim",uz:"tirikchilik, kun kechirish",level:"b2"},
+  {tr:"gondol",uz:"gondol, Venetsiya qayig'i",level:"b2"},
+  {tr:"gurbet",uz:"g'urbat, begona yurt",level:"b2"},
+  {tr:"gösterişli",uz:"hashamatli, ko'zga ko'ringan",level:"b2"},
+  {tr:"gözlemevi",uz:"rasadxona",level:"b2"},
+  {tr:"göç",uz:"ko'chish, migratsiya",level:"b2"},
+  {tr:"göçmenlik",uz:"muhojirlik",level:"b2"},
+  {tr:"güneş panelleri",uz:"quyosh panellari",level:"b2"},
+  {tr:"hac",uz:"haj ziyorati",level:"b2"},
+  {tr:"hacı",uz:"hoji",level:"b2"},
+  {tr:"hafıza",uz:"xotira, eslab qolish",level:"b2"},
+  {tr:"hakim",uz:"sudya",level:"b2"},
+  {tr:"hakim olmak",uz:"ega bo'lmoq, hukmronlik qilmoq",level:"b2"},
+  {tr:"hammadde",uz:"xomashyo",level:"b2"},
+  {tr:"hapis yatmak",uz:"qamoqda yotmoq",level:"b2"},
+  {tr:"harcamak",uz:"sarflamoq, xarajat qilmoq",level:"b2"},
+  {tr:"hasret",uz:"sog'inch, hasrat",level:"b2"},
+  {tr:"hat",uz:"chiziq, xattotlik san'ati",level:"b2"},
+  {tr:"hayran kalmak",uz:"hayron qolmoq, maftun bo'lmoq",level:"b2"},
+  {tr:"heves",uz:"havas, ishtiyoq",level:"b2"},
+  {tr:"heykel",uz:"haykal",level:"b2"},
+  {tr:"hidrojen",uz:"vodorod",level:"b2"},
+  {tr:"hâkimiyet",uz:"hukmronlik",level:"b2"},
+  {tr:"ibadet",uz:"ibodat, sig'inish",level:"b2"},
+  {tr:"ibadethane",uz:"ibodatxona, masjid",level:"b2"},
+  {tr:"idrar",uz:"peshob, siydik",level:"b2"},
+  {tr:"ikon",uz:"ikon, muqaddas tasvir",level:"b2"},
+  {tr:"ileri sürmek",uz:"fikr bildirmoq, taklif qilmoq",level:"b2"},
+  {tr:"ilerleme kaydetmek",uz:"taraqqiyotga erishmoq",level:"b2"},
+  {tr:"ilgi görmek",uz:"e'tiborga sazovor bo'lmoq",level:"b2"},
+  {tr:"ilgi göstermek",uz:"e'tibor bermoq, qiziqish bildirmoq",level:"b2"},
+  {tr:"ilgisini çekmek",uz:"e'tiborini jalb qilmoq",level:"b2"},
+  {tr:"ilgisizlik",uz:"e'tiborsizlik, befarqlik",level:"b2"},
+  {tr:"ispatlamak",uz:"isbotlamoq",level:"b2"},
+  {tr:"içten",uz:"samimiy, chin dildan",level:"b2"},
+  {tr:"içtenlik",uz:"samimiylik",level:"b2"},
+  {tr:"işitme cihazı",uz:"eshitish apparati",level:"b2"},
+  {tr:"kabin",uz:"kabina",level:"b2"},
+  {tr:"kalpazanlık",uz:"soxta pul ishlab chiqarish",level:"b2"},
+  {tr:"kalsiyum",uz:"kalsiy",level:"b2"},
+  {tr:"kalıtsal",uz:"irsiy, meros",level:"b2"},
+  {tr:"kanıtlamak",uz:"dalillamoq, isbotlamoq",level:"b2"},
+  {tr:"kapak olmak",uz:"saboq bo'lmoq",level:"b2"},
+  {tr:"kapkaççılık",uz:"yulg'ichlik, cho'ntakkesorlik",level:"b2"},
+  {tr:"kaplıca",uz:"issiq suv hammomi, shifobaxsh hovuz",level:"b2"},
+  {tr:"karga",uz:"qarg'a",level:"b2"},
+  {tr:"kaya",uz:"qoya, katta tosh",level:"b2"},
+  {tr:"kaybetmek",uz:"yo'qotmoq",level:"b2"},
+  {tr:"kazara",uz:"tasodifan, behosdan",level:"b2"},
+  {tr:"kemer",uz:"kamar, ark",level:"b2"},
+  {tr:"keselemek",uz:"ishqalamoq, archa bilan tozalamoq",level:"b2"},
+  {tr:"keselenmek",uz:"ishqalanmoq, tozalanmoq",level:"b2"},
+  {tr:"kesim",uz:"kesilgan joy, qisim",level:"b2"},
+  {tr:"kinci",uz:"gina saqlovchi, kina tutuvchi",level:"b2"},
+  {tr:"konaklama",uz:"turar joy, mehmonxona",level:"b2"},
+  {tr:"konukseverlik",uz:"mehmondo'stlik",level:"b2"},
+  {tr:"korsan",uz:"qaroqchi, hacker",level:"b2"},
+  {tr:"korse",uz:"korset, kiyim",level:"b2"},
+  {tr:"kot",uz:"jinsi mato, denim",level:"b2"},
+  {tr:"kozmonot",uz:"kosmonavt",level:"b2"},
+  {tr:"kullanıcı",uz:"foydalanuvchi",level:"b2"},
+  {tr:"kundakçılık",uz:"o't qo'yuvchi jinoyatchi",level:"b2"},
+  {tr:"kurban",uz:"qurbon",level:"b2"},
+  {tr:"kuruyemiş",uz:"quruq mevalar, yong'oq",level:"b2"},
+  {tr:"kuşak",uz:"belbog', avlod, nasl",level:"b2"},
+  {tr:"kürk",uz:"mo'yna, shuba",level:"b2"},
+  {tr:"kılıf",uz:"g'ilof, qin",level:"b2"},
+  {tr:"kırışık",uz:"g'ijim, burishgan",level:"b2"},
+  {tr:"kısas",uz:"qasos",level:"b2"},
+  {tr:"kısıtlı",uz:"cheklangan",level:"b2"},
+  {tr:"laboratuvar",uz:"laboratoriya",level:"b2"},
+  {tr:"lakap",uz:"laqab",level:"b2"},
+  {tr:"maden",uz:"ma'dan, yer osti boyligi",level:"b2"},
+  {tr:"madeni para",uz:"tanga, metall pul",level:"b2"},
+  {tr:"mahcup",uz:"uyatchang, xijolatta qolgan",level:"b2"},
+  {tr:"mahkum etmek",uz:"hukm chiqarmoq",level:"b2"},
+  {tr:"makam",uz:"maqom, mansab",level:"b2"},
+  {tr:"manastır",uz:"monastir, rohib uyi",level:"b2"},
+  {tr:"mermer",uz:"marmar",level:"b2"},
+  {tr:"meydan okumak",uz:"kurashga chaqirmoq, qo'rqmasligini ko'rsatmoq",level:"b2"},
+  {tr:"meydana gelmek",uz:"yuzaga kelmoq, ro'y bermoq",level:"b2"},
+  {tr:"misafirperver",uz:"mehmondo'st",level:"b2"},
+  {tr:"moda",uz:"moda",level:"b2"},
+  {tr:"model",uz:"model",level:"b2"},
+  {tr:"motorlu taşıt",uz:"motorli transport",level:"b2"},
+  {tr:"muamma",uz:"muammo, jumboq",level:"b2"},
+  {tr:"mucit",uz:"ixtirochi, mujtahid",level:"b2"},
+  {tr:"mücadele",uz:"kurash, mujodala",level:"b2"},
+  {tr:"müebbet",uz:"umrboqiy, umrbod jazo",level:"b2"},
+  {tr:"mütevazı",uz:"kamtarin, oddiy",level:"b2"},
+  {tr:"oksijen",uz:"kislorod",level:"b2"},
+  {tr:"ortadan kaldırmak",uz:"bartaraf etmoq, yo'q qilmoq",level:"b2"},
+  {tr:"ortaya çıkarmak",uz:"paydo bo'lmoq, ochish",level:"b2"},
+  {tr:"oruç",uz:"ro'za",level:"b2"},
+  {tr:"otlatmak",uz:"o'tlatmoq",level:"b2"},
+  {tr:"otonom",uz:"avtonom, mustaqil",level:"b2"},
+  {tr:"oyalamak",uz:"chalg'itmoq, band qilmoq",level:"b2"},
+  {tr:"oyalanmak",uz:"chalg'imoq, vaqt o'tkazmoq",level:"b2"},
+  {tr:"ozan",uz:"baxshi, xalq shoiri",level:"b2"},
+  {tr:"parça",uz:"parcha, qisim",level:"b2"},
+  {tr:"pastel boya",uz:"pastel bo'yoq, rangli qalam",level:"b2"},
+  {tr:"patent",uz:"patent, ixtiro hujjati",level:"b2"},
+  {tr:"patlak",uz:"yorilib ketgan, yirtilgan",level:"b2"},
+  {tr:"pazarlamak",uz:"sotmoq, marketing qilmoq",level:"b2"},
+  {tr:"pazarlık yapmak",uz:"savdolashmoq, kelishmoq",level:"b2"},
+  {tr:"pedal",uz:"pedal",level:"b2"},
+  {tr:"peribacası",uz:"Kappadokiya tepaliklari",level:"b2"},
+  {tr:"petrol",uz:"neft",level:"b2"},
+  {tr:"piramit",uz:"piramida",level:"b2"},
+  {tr:"porselen",uz:"chinni, farfor",level:"b2"},
+  {tr:"raf ömrü",uz:"yaroqlilik muddati",level:"b2"},
+  {tr:"rahibe",uz:"rohiba",level:"b2"},
+  {tr:"rekortmen",uz:"rekordchi",level:"b2"},
+  {tr:"rivayet",uz:"rivoyat, afsona",level:"b2"},
+  {tr:"sabıka",uz:"sudlanganlik, oldingi jinoyat",level:"b2"},
+  {tr:"sabıkalı",uz:"oldin sudlangan",level:"b2"},
+  {tr:"sakatlanmak",uz:"jarohat olmoq, mayib bo'lmoq",level:"b2"},
+  {tr:"sanık",uz:"sudlanuvchi, ayblanuvchi",level:"b2"},
+  {tr:"savcı",uz:"prokuror, ayblovchi",level:"b2"},
+  {tr:"savunmak",uz:"himoya qilmoq",level:"b2"},
+  {tr:"saydam",uz:"shaffof, tiniq",level:"b2"},
+  {tr:"sayılı",uz:"sanoqli, kam",level:"b2"},
+  {tr:"sezon",uz:"mavsum, fasl",level:"b2"},
+  {tr:"siber",uz:"kiber",level:"b2"},
+  {tr:"silecek",uz:"oyna artkich, yomg'ir artkich",level:"b2"},
+  {tr:"sim kart",uz:"sim karta",level:"b2"},
+  {tr:"sivri",uz:"uchqur, o'tkir",level:"b2"},
+  {tr:"sorgulamak",uz:"so'roq qilmoq, savol bermoq",level:"b2"},
+  {tr:"sorgulanmak",uz:"so'roqqa tutilmoq",level:"b2"},
+  {tr:"soruşturmak",uz:"tergov qilmoq",level:"b2"},
+  {tr:"sosyal ağ",uz:"ijtimoiy tarmoq",level:"b2"},
+  {tr:"soya",uz:"soya",level:"b2"},
+  {tr:"soygunculuk",uz:"talonchilik, bosqinchilik",level:"b2"},
+  {tr:"soylu",uz:"zodagon, aslzoda",level:"b2"},
+  {tr:"söylenti",uz:"mish-mish, gap-so'z",level:"b2"},
+  {tr:"söyleşi",uz:"suhbat, intervyu",level:"b2"},
+  {tr:"sürdürmek",uz:"davom ettirmoq",level:"b2"},
+  {tr:"sürmek",uz:"haydamoq, davom etmoq",level:"b2"},
+  {tr:"süslemek",uz:"bezatmoq, pardozlamoq",level:"b2"},
+  {tr:"süslenmek",uz:"yasanmoq, pardozlanmoq",level:"b2"},
+  {tr:"sıla",uz:"tug'ilgan joy sog'inchi",level:"b2"},
+  {tr:"tahıl ürünleri",uz:"don mahsulotlari",level:"b2"},
+  {tr:"tanık",uz:"guvoh",level:"b2"},
+  {tr:"tapınak",uz:"ibodatxona, ma'bad",level:"b2"},
+  {tr:"tasarlamak",uz:"loyihalashtirmoq, dizayn yaratmoq",level:"b2"},
+  {tr:"tasarruf etmek",uz:"tejab sarflamoq",level:"b2"},
+  {tr:"tazminat",uz:"tovon puli, kompensatsiya",level:"b2"},
+  {tr:"tek eşli",uz:"bir xotinli, monogam",level:"b2"},
+  {tr:"tek tip",uz:"bir xil, bir turdagi",level:"b2"},
+  {tr:"teklif etmek",uz:"taklif qilmoq",level:"b2"},
+  {tr:"tercih etmek",uz:"afzal ko'rmoq, tanlash",level:"b2"},
+  {tr:"tespit etmek",uz:"aniqlamoq, tasdiqlamoq",level:"b2"},
+  {tr:"teşhis",uz:"tashxis, diagnostika",level:"b2"},
+  {tr:"titreşim",uz:"tebranish, vibratsiya",level:"b2"},
+  {tr:"tohum",uz:"urug'",level:"b2"},
+  {tr:"ton",uz:"tonna, ovoz toni",level:"b2"},
+  {tr:"topluluk",uz:"jamoat, to'da",level:"b2"},
+  {tr:"turizm elçisi",uz:"turizm elchisi, ambassador",level:"b2"},
+  {tr:"tutuklamak",uz:"hibsga olmoq",level:"b2"},
+  {tr:"tutuklanmak",uz:"hibsga olinmoq",level:"b2"},
+  {tr:"tır",uz:"yuk mashinasi, tir",level:"b2"},
+  {tr:"tırabzan",uz:"zinapoya tutqichi, poyla",level:"b2"},
+  {tr:"utandırmak",uz:"uyaltirmoq, hijolat qilmoq",level:"b2"},
+  {tr:"utanmak",uz:"uyalmoq, hijolat bo'lmoq",level:"b2"},
+  {tr:"uygulama",uz:"ilova, dastur",level:"b2"},
+  {tr:"uygulamak",uz:"qo'llamoq, amalga oshirmoq",level:"b2"},
+  {tr:"uğraşmak",uz:"shug'ullanmoq, harakat qilmoq",level:"b2"},
+  {tr:"varlıklı",uz:"badavlat, boy",level:"b2"},
+  {tr:"vazgeçilmez",uz:"ajralmas, zaruriy",level:"b2"},
+  {tr:"verimli",uz:"samarali, hosildor",level:"b2"},
+  {tr:"vites",uz:"tezlik, vitez",level:"b2"},
+  {tr:"vitrin",uz:"vitrina, ko'rgazma oynasi",level:"b2"},
+  {tr:"yakıt",uz:"yoqilg'i",level:"b2"},
+  {tr:"yamaç",uz:"qiyalik, tog' yon bag'ri",level:"b2"},
+  {tr:"yan etki",uz:"yon ta'sir",level:"b2"},
+  {tr:"yankesiclik",uz:"kissavurlik, cho'ntakkesarlik",level:"b2"},
+  {tr:"yanıtlamak",uz:"javob qaytarmoq",level:"b2"},
+  {tr:"yapıt",uz:"asar, bino",level:"b2"},
+  {tr:"yargılamak",uz:"hukm qilmoq",level:"b2"},
+  {tr:"yargılanmak",uz:"sudlanmoq",level:"b2"},
+  {tr:"yarımada",uz:"yarim orol",level:"b2"},
+  {tr:"yaygınlaşmak",uz:"yoyilmoq, keng tarqalmoq",level:"b2"},
+  {tr:"yazılım",uz:"dasturiy ta'minot",level:"b2"},
+  {tr:"yenilebilir",uz:"yeyiladigan",level:"b2"},
+  {tr:"yenilenebilir",uz:"qayta tiklanadigan",level:"b2"},
+  {tr:"yenilenmek",uz:"yangilanmoq",level:"b2"},
+  {tr:"yer çekimi",uz:"yer tortish kuchi",level:"b2"},
+  {tr:"yitirmek",uz:"yo'qotmoq, ta'sirini yo'qotmoq",level:"b2"},
+  {tr:"yiğitlik",uz:"mardlik, jasorat",level:"b2"},
+  {tr:"yokluk",uz:"yo'qchilik, kamchilik",level:"b2"},
+  {tr:"yol açmak",uz:"yo'l ochmoq, sabab bo'lmoq",level:"b2"},
+  {tr:"yolsuzluk",uz:"korrupsiya, mansabni suiiste'mol qilish",level:"b2"},
+  {tr:"yorumlamak",uz:"sharhlash, izoh qoldirmoq",level:"b2"},
+  {tr:"yüklü",uz:"og'ir, yuklangan",level:"b2"},
+  {tr:"zafer",uz:"g'alaba, zafar",level:"b2"},
+  {tr:"zalim",uz:"zolim, shafqatsiz",level:"b2"},
+  {tr:"zam",uz:"ish haqi oshishi, qo'shimcha",level:"b2"},
+  {tr:"zehirlemek",uz:"zaharlamoq",level:"b2"},
+  {tr:"zehirlenmek",uz:"zaharlanmoq",level:"b2"},
+  {tr:"ziynet",uz:"zeb-ziynat",level:"b2"},
+  {tr:"âşık",uz:"baxshi, xalq ozan",level:"b2"},
+  {tr:"çalgı",uz:"cholg'u asbobi",level:"b2"},
+  {tr:"çarmıh",uz:"xochga mixlash dori",level:"b2"},
+  {tr:"çekyat",uz:"tagi ochiladigan divan",level:"b2"},
+  {tr:"çelik",uz:"po'lat, temir po'lat",level:"b2"},
+  {tr:"çile",uz:"azob, sinov, og'irlik",level:"b2"},
+  {tr:"çözünürlük",uz:"eruvchanlik, piksel",level:"b2"},
+  {tr:"çığlık atmak",uz:"faryod ko'tarmoq, qichqirmoq",level:"b2"},
+  {tr:"öne çıkmak",uz:"oldinga chiqmoq, ajralib turmoq",level:"b2"},
+  {tr:"övmek",uz:"maqtamoq, ta'riflash",level:"b2"},
+  {tr:"övünmek",uz:"maqtanmoq",level:"b2"},
+  {tr:"ısırmak",uz:"tishlamoq, qopmoq",level:"b2"},
+  {tr:"şantajcı",uz:"shantajchi",level:"b2"},
+  {tr:"şantiye",uz:"qurilish maydoni",level:"b2"},
+  {tr:"şarj",uz:"zaryad, to'ldirish",level:"b2"},
+  {tr:"şempanze",uz:"shimpanze",level:"b2"},
+  {tr:"şifalı",uz:"shifobaxsh, davo beruvchi",level:"b2"},
+  {tr:"şifre",uz:"parol, maxfiy kod",level:"b2"},
+  {tr:"şnorkel",uz:"nafas shlankasi, snorkel",level:"b2"},
+
+  // ========== C1 daraja – QOSHILMAGAN ==========
+  {tr:"acıma",uz:"achinish, rahm qilish",level:"c1"},
+  {tr:"adamak",uz:"bag'ishlamoq, atab qo'ymoq",level:"c1"},
+  {tr:"akson",uz:"asab tolasi uzaytmasi, akson",level:"c1"},
+  {tr:"alakadar",uz:"aloqador, tegishli",level:"c1"},
+  {tr:"alt üst olmak",uz:"ostin-ustun bo'lmoq, parishon bo'lmoq",level:"c1"},
+  {tr:"anemi",uz:"kamqonlik, anemiya",level:"c1"},
+  {tr:"anestezik",uz:"og'riq qoldiruvchi, anesteziya",level:"c1"},
+  {tr:"antropolog",uz:"antropolog",level:"c1"},
+  {tr:"antropoloji",uz:"antropologiya",level:"c1"},
+  {tr:"arpa",uz:"arpa",level:"c1"},
+  {tr:"arzuhâl",uz:"shikoyat, ariza",level:"c1"},
+  {tr:"ataç",uz:"qog'oz qisqich, skrepka",level:"c1"},
+  {tr:"atıp tutmak",uz:"bo'rttirib gapirmoq, maqtanmoq",level:"c1"},
+  {tr:"ayaküstü görüşmek",uz:"tasodifiy uchrashmoq",level:"c1"},
+  {tr:"ayılmak",uz:"hushiga kelmoq, hushyor tortmoq",level:"c1"},
+  {tr:"baraka",uz:"kulba, barak",level:"c1"},
+  {tr:"bir eli yağda bir eli balda olmak",uz:"bir qo'li yog'da bir qo'li bolda bo'lmoq",level:"c1"},
+  {tr:"bir şeyden yana olmak",uz:"biron ishni foydasiga hal qilmoq",level:"c1"},
+  {tr:"boşa harcamak",uz:"isrof qilmoq, bekor sarflamoq",level:"c1"},
+  {tr:"bulgu",uz:"topilma, topish",level:"c1"},
+  {tr:"büyük ikramiye kazanmak",uz:"katta mukofot yutmoq",level:"c1"},
+  {tr:"cariye",uz:"kanizak, joriya",level:"c1"},
+  {tr:"cezbedici",uz:"jozibali, o'ziga tortuvchi",level:"c1"},
+  {tr:"dayandırmak",uz:"chidatmoq, tayanch bermoq",level:"c1"},
+  {tr:"dikkat dağıtıcı",uz:"diqqatni chalg'ituvchi",level:"c1"},
+  {tr:"dilden dile dolaşmak",uz:"tildan tilga o'tmoq, mashxur bo'lmoq",level:"c1"},
+  {tr:"dilinin ucuna gelmek",uz:"tilimning uchida turibdi",level:"c1"},
+  {tr:"dillerde dolaşmak",uz:"tildan tilga ko'chmoq",level:"c1"},
+  {tr:"dillere destan",uz:"tillarda doston, mashxur",level:"c1"},
+  {tr:"dindirmek",uz:"tinchlantirmoq, to'xtatmoq",level:"c1"},
+  {tr:"dondurmak",uz:"muzlatmoq, to'xtatmoq",level:"c1"},
+  {tr:"dünya ile bağını koparmak",uz:"dunyodan uzilib qolmoq",level:"c1"},
+  {tr:"egzama",uz:"egzema teri kasalligi",level:"c1"},
+  {tr:"emek",uz:"mehnat, kuch",level:"c1"},
+  {tr:"faz",uz:"bosqich, faza",level:"c1"},
+  {tr:"feniletilamin",uz:"muhabbat gormoni, feniletilamin",level:"c1"},
+  {tr:"firavun",uz:"fir'avn",level:"c1"},
+  {tr:"formal",uz:"rasmiy, formal",level:"c1"},
+  {tr:"frontal lop",uz:"frontal lob, peshona qismi",level:"c1"},
+  {tr:"fuzuli",uz:"keraksiz, befoyda",level:"c1"},
+  {tr:"gayrimenkul",uz:"ko'chmas mulk",level:"c1"},
+  {tr:"gösterim",uz:"namoyish, ko'rsatish",level:"c1"},
+  {tr:"göz ucuyla bakmak",uz:"ko'z qirini tashlamoq",level:"c1"},
+  {tr:"gözleri fal taşı gibi açılmak",uz:"ko'zlari katta bo'lib ketmoq, hayron qolmoq",level:"c1"},
+  {tr:"gününü gün etmek",uz:"kunini qadrlamoq, hayotdan zavqlanmoq",level:"c1"},
+  {tr:"halletmek",uz:"hal qilmoq, yechmoq",level:"c1"},
+  {tr:"hapishane",uz:"qamoqxona, zindon",level:"c1"},
+  {tr:"hatırı sayılır",uz:"hurmatli, obro'li",level:"c1"},
+  {tr:"heveslendirmek",uz:"havasini keltirmoq, ilhomlantirmoq",level:"c1"},
+  {tr:"hicri",uz:"hijriy, arab taqvimi",level:"c1"},
+  {tr:"hiperforin",uz:"giperforin, kimyoviy birikma",level:"c1"},
+  {tr:"ilişkilendirmek",uz:"bog'lamoq, aloqalantirmoq",level:"c1"},
+  {tr:"inci",uz:"dur, marvarid",level:"c1"},
+  {tr:"ipler kopmak",uz:"iplari uzilmoq, nazorat yo'qotmoq",level:"c1"},
+  {tr:"ishal",uz:"diareya, ich ketish",level:"c1"},
+  {tr:"iskemle",uz:"suyanchiqsiz stul, taburetka",level:"c1"},
+  {tr:"istatistik",uz:"statistik, statistika",level:"c1"},
+  {tr:"itip çekmek",uz:"itarib tortmoq, bezovta qilmoq",level:"c1"},
+  {tr:"izlenim",uz:"taassurot, kuzatuv",level:"c1"},
+  {tr:"iç geçirmek",uz:"xo'rsinmoq",level:"c1"},
+  {tr:"işitme engelli",uz:"kar, zaif eshituvchi",level:"c1"},
+  {tr:"işlenmek",uz:"qayta ishlanmoq",level:"c1"},
+  {tr:"iştahanı kabartmak",uz:"ishtahani qo'zg'atmoq",level:"c1"},
+  {tr:"kamış",uz:"qamish",level:"c1"},
+  {tr:"karavan",uz:"karavan, avtomobil uycha",level:"c1"},
+  {tr:"kaynak olmak",uz:"manba bo'lmoq",level:"c1"},
+  {tr:"kekik",uz:"zira-toshcho'p, timo'n",level:"c1"},
+  {tr:"kenara ayırmak",uz:"bir chetga ajratib qo'ymoq",level:"c1"},
+  {tr:"kendini vermek",uz:"to'liq berilmoq, bor kuchini bermoq",level:"c1"},
+  {tr:"kimyon",uz:"zira",level:"c1"},
+  {tr:"kolonoskopi",uz:"yo'g'on ichak endoskopiyasi",level:"c1"},
+  {tr:"kuyruklu yıldız",uz:"kometa",level:"c1"},
+  {tr:"kuyu",uz:"quduq",level:"c1"},
+  {tr:"kuşkucu",uz:"shubhachi, skeptik",level:"c1"},
+  {tr:"küçük düşmek",uz:"kamsitilmoq, qadrini tushirmoq",level:"c1"},
+  {tr:"kıvılcım",uz:"uchqun, iskra",level:"c1"},
+  {tr:"limbik sistem",uz:"limbik tizim, his-tuyg'ularni boshqaradi",level:"c1"},
+  {tr:"lop",uz:"miya bo'lagi, lob",level:"c1"},
+  {tr:"lüks",uz:"lyuks, hashamat",level:"c1"},
+  {tr:"makul",uz:"ma'qul, oqilona",level:"c1"},
+  {tr:"mal",uz:"mol-mulk, tovar",level:"c1"},
+  {tr:"mal varlığı",uz:"aktivlar, boylik",level:"c1"},
+  {tr:"maruzat",uz:"arz, shikoyat",level:"c1"},
+  {tr:"medeniyet",uz:"madaniyat, sivilizatsiya",level:"c1"},
+  {tr:"merak sarmak",uz:"qiziqish uyg'otmoq",level:"c1"},
+  {tr:"meraktan çatlamak",uz:"qiziqishdan portlamoq",level:"c1"},
+  {tr:"miladi",uz:"milodiy, Iso kalendari",level:"c1"},
+  {tr:"musallat olmak",uz:"boshga bitgan balo bo'lmoq",level:"c1"},
+  {tr:"müşahede",uz:"mushohada, kuzatish",level:"c1"},
+  {tr:"neokorteks",uz:"neokorteks, aqliy jarayonlar markazi",level:"c1"},
+  {tr:"norepinefrin",uz:"norepinefrin, stres gormoni",level:"c1"},
+  {tr:"nörotik",uz:"nevrotik, asabiy",level:"c1"},
+  {tr:"nükleer santral",uz:"atom elektr stansiyasi",level:"c1"},
+  {tr:"oksipital lop",uz:"ensadagi miya bo'lagi, ko'rishni boshqaradi",level:"c1"},
+  {tr:"oksitosin",uz:"oksitotsin, bog'liqlik gormoni",level:"c1"},
+  {tr:"okunaklı",uz:"o'qimishli, aniq yozilgan",level:"c1"},
+  {tr:"parietal lop",uz:"tepadan miya bo'lagi, hissiyotni boshqaradi",level:"c1"},
+  {tr:"patlak vermek",uz:"paydo bo'lmoq, yuzaga kelmoq",level:"c1"},
+  {tr:"pazarlık payı",uz:"savdo ulushi, chegirma imkoni",level:"c1"},
+  {tr:"perde",uz:"parda, panjara",level:"c1"},
+  {tr:"periyot",uz:"davr, tsikl",level:"c1"},
+  {tr:"pinti",uz:"hasis, ziqna",level:"c1"},
+  {tr:"razı",uz:"rozi, tayyor",level:"c1"},
+  {tr:"rota",uz:"yo'nalish, marshrut",level:"c1"},
+  {tr:"ruh",uz:"jon, ruh",level:"c1"},
+  {tr:"salgılamak",uz:"sekretsiya qilmoq, ajratmoq",level:"c1"},
+  {tr:"salınım",uz:"tebranish, maylanish",level:"c1"},
+  {tr:"san",uz:"unvon, daraja",level:"c1"},
+  {tr:"saptamak",uz:"tuzatmoq, belgilamoq",level:"c1"},
+  {tr:"sarkaç",uz:"mayatnik, tebranuvchi",level:"c1"},
+  {tr:"sarı kantaron",uz:"dalachoy, zveraboy",level:"c1"},
+  {tr:"savurgan",uz:"isrofgarchi, tejamas",level:"c1"},
+  {tr:"sağır",uz:"kar, eshitmaydigan",level:"c1"},
+  {tr:"serebellum",uz:"miyacha, muvozanatni boshqaradi",level:"c1"},
+  {tr:"set",uz:"to'plam, set",level:"c1"},
+  {tr:"silkinmek",uz:"silkinmoq, chayqalmoq",level:"c1"},
+  {tr:"soba",uz:"pechka, kamin",level:"c1"},
+  {tr:"somutlaşmak",uz:"aniqlamoq, moddiylashtirmoq",level:"c1"},
+  {tr:"soyutlanmak",uz:"izolyatsiya qilinmoq",level:"c1"},
+  {tr:"subliminal",uz:"ongosti, subliminal ta'sir",level:"c1"},
+  {tr:"söz dizim",uz:"sintaksis, so'z tuzilishi",level:"c1"},
+  {tr:"sınıflandırma",uz:"tasniflash, toifalash",level:"c1"},
+  {tr:"takatı kalmamak",uz:"toqati qolmaslik, holdan toymoq",level:"c1"},
+  {tr:"tavır",uz:"hatti-harakat, munosabat",level:"c1"},
+  {tr:"telif",uz:"mualliflik huquqi, yozish",level:"c1"},
+  {tr:"temelini oluşturmak",uz:"asosini yaratmoq, poydevor qo'ymoq",level:"c1"},
+  {tr:"temporal lop",uz:"chakka miya bo'lagi, eshitish markazi",level:"c1"},
+  {tr:"tetkik",uz:"tadqiq, tekshirish",level:"c1"},
+  {tr:"tezkere",uz:"xat, ruxsatnoma, hujjat",level:"c1"},
+  {tr:"titr",uz:"unvon, daraja, titr",level:"c1"},
+  {tr:"tutku",uz:"havas, ishtiyoq, ehtiros",level:"c1"},
+  {tr:"tutum",uz:"munosabat, iqtisod qilish",level:"c1"},
+  {tr:"tutumlu",uz:"tejamkor, iqtisodchi",level:"c1"},
+  {tr:"türetmek",uz:"hosil qilmoq, yasamoq",level:"c1"},
+  {tr:"ulumak",uz:"ulimoq, uvlamoq",level:"c1"},
+  {tr:"unvan",uz:"unvon, mansab",level:"c1"},
+  {tr:"uzun metraj",uz:"uzun metrajli film",level:"c1"},
+  {tr:"uçan kuşa borcu olmak",uz:"hammadan qarz bo'lmoq",level:"c1"},
+  {tr:"vade",uz:"muddat, to'lov muhlati",level:"c1"},
+  {tr:"vadeli hisap",uz:"muddatli hisob",level:"c1"},
+  {tr:"vizyon",uz:"ko'rish, istiqbol",level:"c1"},
+  {tr:"vız gelmek",uz:"ahamiyat qaratmaslik, parvo qilmaslik",level:"c1"},
+  {tr:"yapılandırmak",uz:"tuzilma bermoq, undirmoq",level:"c1"},
+  {tr:"yasal işlem başlatmak",uz:"qonuniy chora ko'rish",level:"c1"},
+  {tr:"yatıştırıcı",uz:"tinchlantiruvchi vosita, sedativ",level:"c1"},
+  {tr:"yol almak",uz:"yo'l olmoq, oldinga yurmoq",level:"c1"},
+  {tr:"yulaf",uz:"jo'xori, suli",level:"c1"},
+  {tr:"yüklü miktar",uz:"katta miqdor",level:"c1"},
+  {tr:"yüzey",uz:"yuza, sirt",level:"c1"},
+  {tr:"zaman ayırmak",uz:"vaqt ajratmoq",level:"c1"},
+  {tr:"zavallı",uz:"bechora, miskin",level:"c1"},
+  {tr:"zehir olmak",uz:"zahar bo'lmoq, joniga tegmoq",level:"c1"},
+  {tr:"zemberek",uz:"soat mexanizmi, zanjir",level:"c1"},
+  {tr:"zengenliğine zengenlik katmak",uz:"boyligiga boylik qo'shmoq",level:"c1"},
+  {tr:"zorda kalmak",uz:"qiyin ahvolda qolmoq",level:"c1"},
+  {tr:"çaktırmak",uz:"oshkor qilmoq, bildirmoq",level:"c1"},
+  {tr:"çavdar",uz:"javdar",level:"c1"},
+  {tr:"çek",uz:"chek, to'lov hujjati",level:"c1"},
+  {tr:"çekim",uz:"kadr, film rejasi",level:"c1"},
+  {tr:"çoğaltmak",uz:"ko'paytirmoq",level:"c1"},
+  {tr:"çölyak",uz:"kolyak kasalligi, gluten toqatsizligi",level:"c1"},
+  {tr:"çırpınmak",uz:"pitirchilamoq, qiynalib harakat qilmoq",level:"c1"},
+  {tr:"üşenmek",uz:"erinmoq, dangasalik qilmoq",level:"c1"},
+  {tr:"ısırık",uz:"tishlatgan joy, chaqqan iz",level:"c1"},
+  {tr:"şahitlik",uz:"guvohlik, guvoh bo'lish",level:"c1"},
+  {tr:"şekillenmek",uz:"shakllanmoq, ko'rinish olmoq",level:"c1"},
+  {tr:"şıpırdamak",uz:"shildiramoq, yupqa tovush chiqarmoq",level:"c1"},
+];
+
+
+// State
+let selectedLevel = 'all';
+let selectedDir = 'tr-uz';
+let questionCount = 20;
+let sessionWords = [];
+let currentIdx = 0;
+let score = 0;
+let wrongAnswers = [];
+let answered = false;
+
+// Init
+function updateStats() {
+  const b1 = words.filter(w=>w.level==='b1').length;
+  const b2 = words.filter(w=>w.level==='b2').length;
+  const c1 = words.filter(w=>w.level==='c1').length;
+  document.getElementById('statTotal').textContent = words.length;
+  document.getElementById('statB1').textContent = b1;
+  document.getElementById('statB2').textContent = b2;
+  document.getElementById('statC1').textContent = c1;
+}
+updateStats();
+
+// Level buttons
+document.querySelectorAll('.level-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedLevel = btn.dataset.level;
+  });
+});
+
+// Direction buttons
+document.querySelectorAll('.dir-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.dir-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedDir = btn.dataset.dir;
+  });
+});
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function startQuiz() {
+  const pool = selectedLevel === 'all' ? words : words.filter(w=>w.level===selectedLevel);
+  if(pool.length === 0) { alert("Bu daraja uchun so'z yo'q!"); return; }
+  questionCount = Math.min(parseInt(document.getElementById('countInput').value)||20, pool.length);
+  sessionWords = shuffle(pool).slice(0, questionCount);
+  currentIdx = 0; score = 0; wrongAnswers = [];
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const w = sessionWords[currentIdx];
+  answered = false;
+
+  // Progress
+  const pct = (currentIdx / sessionWords.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = (currentIdx+1) + ' / ' + sessionWords.length;
+  document.getElementById('scoreBadge').textContent = score + ' ✓';
+
+  // Level tag
+  const lt = document.getElementById('levelTag');
+  lt.textContent = w.level.toUpperCase();
+  lt.className = 'level-tag ' + w.level;
+
+  // Question
+  const qWord = selectedDir === 'tr-uz' ? w.tr : w.uz;
+  const hint = selectedDir === 'tr-uz' ? 'Turkchasini o\'zbek tilida yozing / tanlang' : 'O\'zbekcha so\'zning turkchasini tanlang';
+  document.getElementById('questionWord').textContent = qWord;
+  document.getElementById('questionHint').textContent = hint;
+
+  // Options
+  const correct = selectedDir === 'tr-uz' ? w.uz : w.tr;
+  const allPool = selectedDir === 'tr-uz' ? words.map(x=>x.uz) : words.map(x=>x.tr);
+  const wrongOpts = shuffle(allPool.filter(x=>x!==correct)).slice(0,3);
+  const options = shuffle([correct, ...wrongOpts]);
+
+  const container = document.getElementById('answerOptions');
+  container.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(opt, correct, btn);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('feedbackArea').innerHTML = '';
+  document.getElementById('nextBtn').classList.remove('visible');
+}
+
+function checkAnswer(chosen, correct, btn) {
+  if(answered) return;
+  answered = true;
+  const w = sessionWords[currentIdx];
+
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b => {
+    b.disabled = true;
+    if(b.textContent === correct) b.classList.add('correct');
+  });
+
+  const fb = document.getElementById('feedbackArea');
+  if(chosen === correct) {
+    score++;
+    btn.classList.add('correct');
+    fb.innerHTML = '<span class="feedback-correct">✓ To\'g\'ri!</span>';
+  } else {
+    btn.classList.add('wrong');
+    wrongAnswers.push(w);
+    fb.innerHTML = `<span class="feedback-wrong">✗ Noto'g'ri! To'g'ri: <strong>${correct}</strong></span>`;
+  }
+  document.getElementById('scoreBadge').textContent = score + ' ✓';
+  document.getElementById('nextBtn').classList.add('visible');
+}
+
+function nextQuestion() {
+  currentIdx++;
+  if(currentIdx >= sessionWords.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  showScreen('result');
+  const pct = Math.round((score/sessionWords.length)*100);
+  let emoji = pct>=80?'🎉':pct>=50?'💪':'📚';
+  let title = pct>=80?"Ajoyib natija!":pct>=50?"Yaxshi harakat!":"Ko'proq mashq qiling!";
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultScore').textContent = score+'/'+sessionWords.length;
+  document.getElementById('resultSub').textContent = pct+"% to'g'ri javob";
+  document.getElementById('wrongList').style.display = 'none';
+}
+
+function showWrongList() {
+  const wl = document.getElementById('wrongList');
+  if(wrongAnswers.length > 0) {
+    let html = '';
+    const show = wrongAnswers.slice(0,15);
+    show.forEach(w=>{
+      html += `<div class="wrong-item"><span class="wi-tr">${w.tr}</span><span class="wi-uz">${w.uz}</span></div>`;
+    });
+    if(wrongAnswers.length>15) {
+      html += `<div style="color:var(--muted);font-size:0.8rem;padding:0.5rem 0">... va yana ${wrongAnswers.length-15} ta</div>`;
+    }
+    wl.innerHTML = html;
+    wl.style.display = 'block';
+  } else {
+    wl.innerHTML = `<div style="text-align:center;color:var(--correct);padding:1rem">🎯 Barcha javoblar to'g'ri!</div>`;
+    wl.style.display = 'block';
+  }
+}
+
+function restartQuiz() { startQuiz(); }
+function goHome() { showScreen('welcome'); }
+</script>
+</body>
+</html>
